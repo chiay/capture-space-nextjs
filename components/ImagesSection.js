@@ -9,7 +9,7 @@ export default function ImagesSection() {
 
 	return (
 		<>
-			<SearchBar images={images} setSearch={setSearch} />
+			{images && <SearchBar images={images} setSearch={setSearch} />}
 			{search && (
 				<div className="mt-5 flex flex-wrap justify-start">
 					{search.map((image) => {
@@ -17,7 +17,7 @@ export default function ImagesSection() {
 					})}
 				</div>
 			)}
-			{!search && images && (
+			{!search && (
 				<div className="mt-5 flex flex-wrap justify-start">
 					{error && (
 						<p className="text-red-400 text-center">

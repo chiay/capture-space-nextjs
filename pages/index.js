@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import Link from 'next/link';
-import ImagesSection from './components/ImagesSection';
+import ImagesSection from '../components/ImagesSection';
 
 export default function Home() {
 	return (
