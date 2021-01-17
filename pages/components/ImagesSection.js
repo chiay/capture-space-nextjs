@@ -17,7 +17,7 @@ export default function ImagesSection() {
 					})}
 				</div>
 			)}
-			{!search && (
+			{!search && images && (
 				<div className="mt-5 flex flex-wrap justify-start">
 					{error && (
 						<p className="text-red-400 text-center">
