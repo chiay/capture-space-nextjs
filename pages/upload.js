@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -13,19 +14,33 @@ export default function upload() {
 		},
 	});
 	const router = useRouter();
+	const [error, setError] = useState('');
+	const [loading, isLoading] = useState(false);
 
 	const onSubmit = async (data) => {
 		const { name, description, tags } = data;
+		if (data.image[0].size > 3145728) {
+			return setError('File size exceeded limit.');
+		}
 		try {
+			isLoading(!loading);
 			const base64 = await imageToBase64(data.image[0]);
 			const image = base64.split(',');
 			await fetch('/api/newImage', {
 				method: 'POST',
-				body: JSON.stringify({ name, description, tags, image: image[1] }),
+				body: JSON.stringify({
+					name,
+					description,
+					tags,
+					likes: 0,
+					type: data.image[0].type,
+					image: image[1],
+				}),
 				headers: {
 					'Content-Type': 'application/json',
 				},
 			});
+			isLoading(!loading);
 			router.push('/');
 		} catch (err) {
 			console.log(err);
@@ -61,7 +76,7 @@ export default function upload() {
 							htmlFor="name"
 							className="block my-2 text-white font-medium"
 						>
-							Name
+							Name*
 						</label>
 						<input
 							type="text"
@@ -71,7 +86,9 @@ export default function upload() {
 							autoComplete="off"
 							ref={register({ required: true })}
 						/>
-						{errors.name && <p>This field is required.</p>}
+						{errors.name && errors.name.type === 'required' && (
+							<p className="text-red-400">This field is required.</p>
+						)}
 					</div>
 					<div className="my-4">
 						<label
@@ -85,6 +102,7 @@ export default function upload() {
 							id="description"
 							name="description"
 							className="w-full rounded p-2"
+							autoComplete="off"
 							ref={register}
 						/>
 					</div>
@@ -101,6 +119,7 @@ export default function upload() {
 							name="tags"
 							placeholder="Separate each tag with comma"
 							className="w-full rounded p-2"
+							autoComplete="off"
 							ref={register}
 						/>
 					</div>
@@ -109,7 +128,7 @@ export default function upload() {
 							htmlFor="image"
 							className="block my-2 text-white font-medium"
 						>
-							Image Upload (Max. 5MB)
+							Image Upload* (Max. 3MB)
 						</label>
 						<input
 							type="file"
@@ -119,12 +138,16 @@ export default function upload() {
 							accept="image/png, image/jpeg"
 							ref={register({ required: true })}
 						/>
-						{errors.image && <p>This field is required.</p>}
+						{errors.image && errors.name.type === 'required' && (
+							<p className="text-red-400">This field is required.</p>
+						)}
+						{error && <p className="text-red-400">{error}</p>}
 					</div>
 					<div className="flex justify-center my-5">
 						<button
 							type="submit"
 							className="bg-blue-600 text-white rounded p-2 mx-1 hover:bg-blue-700"
+							disabled={loading}
 						>
 							Upload
 						</button>

@@ -1,5 +1,6 @@
 import Head from 'next/head';
 import Link from 'next/link';
+import ImagesSection from './components/ImagesSection';
 
 export default function Home() {
 	return (
@@ -15,10 +16,11 @@ export default function Home() {
 					A place to show off your images to the rest of the world!
 				</h3>
 				<Link href="/upload">
-					<a className="bg-blue-600 text-white rounded p-2">
+					<a className="bg-blue-600 text-white rounded p-2 hover:text-white hover:bg-blue-700">
 						Upload an image!
 					</a>
 				</Link>
+				<ImagesSection />
 			</main>
 
 			<footer className=""></footer>

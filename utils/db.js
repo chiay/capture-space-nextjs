@@ -19,12 +19,20 @@ const getImages = async () => {
 	return images;
 };
 
-const newImage = async (name, description, tags, image) => {
+const newImage = async (name, description, tags, likes, type, image) => {
 	return await client.query(
 		q.Create(q.Collection('images'), {
-			data: { name, description, tags, image },
+			data: { name, description, tags, likes, type, image },
 		})
 	);
 };
 
-module.exports = { getImages, newImage };
+const likeImage = async (id, likes) => {
+	return await client.query(
+		q.Update(q.Ref(q.Collection('images'), id), {
+			data: { likes },
+		})
+	);
+};
+
+module.exports = { getImages, newImage, likeImage };
